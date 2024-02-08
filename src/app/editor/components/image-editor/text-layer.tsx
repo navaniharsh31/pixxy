@@ -6,7 +6,7 @@ import {
 import { TextLayer } from "@/typings";
 import clsx from "clsx";
 import { useAtom, useSetAtom } from "jotai";
-import React, { useEffect, useRef, useState } from "react";
+import React, { MouseEvent, useEffect, useRef, useState } from "react";
 
 interface TextLayerComponentProps {
   layer: TextLayer;
@@ -16,15 +16,29 @@ const TextLayerComponent = ({ layer }: TextLayerComponentProps) => {
   const [selectedLayer, setSelectedLayer] = useAtom(selectedLayerAtom);
   const [canEdit, setCanEdit] = useState(false);
   const spanRef = useRef<HTMLSpanElement | null>(null);
-
+  const containerRef = useRef<HTMLDivElement | null>(null)
   useEffect(() => {
     if (spanRef.current && canEdit) {
       spanRef.current.focus();
     }
   }, [canEdit]);
 
+  useEffect(() => {
+    if (!containerRef.current) return;
+    const handleClickOutside = (event: any) => {
+      if (containerRef.current && !containerRef.current.contains(event.target)) {
+        setSelectedLayer('');
+      }
+    }
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
+
   return (
     <div
+      ref={containerRef}
       onDragStart={(e) => {
         e.dataTransfer.setData("textDrag", layer.id);
         const updatedLayer = {
