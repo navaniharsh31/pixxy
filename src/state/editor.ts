@@ -77,6 +77,7 @@ export const layerDefaultsMapper = {
   [LayerTypes.TEXT]: {
     text: "TEXT",
     fontSize: 12,
+    fontWeight: 400,
     color: "#000000",
     position: { x: 0, y: 0 },
     offset: { x: 0, y: 0 },

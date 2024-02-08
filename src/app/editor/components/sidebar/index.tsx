@@ -78,13 +78,9 @@ const EditorSidebar = () => {
       switch (type) {
         case LayerTypes.TEXT:
           layer = {
-            ...layerDefaultsMapper[type],
             id,
             type,
-            text: "TEXT",
-            fontSize: 12,
-            color: "#000000",
-            position: { x: 0, y: 0 },
+            ...layerDefaultsMapper[type],
           } as TextLayer;
           break;
         case LayerTypes.FILTERS:

@@ -5,7 +5,7 @@ import {
 } from "@/state/editor";
 import { TextLayer } from "@/typings";
 import clsx from "clsx";
-import { useAtomValue, useSetAtom } from "jotai";
+import { useAtom, useSetAtom } from "jotai";
 import React, { useEffect, useRef, useState } from "react";
 
 interface TextLayerComponentProps {
@@ -13,7 +13,7 @@ interface TextLayerComponentProps {
 }
 const TextLayerComponent = ({ layer }: TextLayerComponentProps) => {
   const setLayers = useSetAtom(layerSetterAtom);
-  const selectedLayer = useAtomValue(selectedLayerAtom);
+  const [selectedLayer, setSelectedLayer] = useAtom(selectedLayerAtom);
   const [canEdit, setCanEdit] = useState(false);
   const spanRef = useRef<HTMLSpanElement | null>(null);
 
@@ -54,6 +54,9 @@ const TextLayerComponent = ({ layer }: TextLayerComponentProps) => {
       onClick={(e) => {
         e.stopPropagation();
         setCanEdit(true);
+        if (layer.id !== selectedLayer) {
+          setSelectedLayer(layer.id);
+        }
       }}
       className={clsx(
         "absolute z-50 ",
@@ -71,6 +74,7 @@ const TextLayerComponent = ({ layer }: TextLayerComponentProps) => {
         style={{
           fontSize: `${layer.fontSize}px`,
           color: layer.color,
+          fontWeight: `${layer.fontWeight}`,
         }}
         id={layer.id}
         draggable

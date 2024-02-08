@@ -13,6 +13,7 @@ export interface TextLayer extends Layer {
   type: LayerTypes.TEXT;
   text: string;
   fontSize: number;
+  fontWeight: number;
   color: string;
   position: { x: number; y: number };
   offset: { x: number; y: number };

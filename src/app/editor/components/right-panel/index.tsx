@@ -75,17 +75,21 @@ const RightPanel = () => {
     <div className="w-full h-full grid grid-rows-2">
       <div className="flex flex-col h-full border-b border-gray-300">
         <p className="font-semibold p-3 border-b border-gray-300">Properties</p>
-        <div className="flex flex-col gap-3 p-2 overflow-auto">
-          {renderProperties()}
-        </div>
+        {selectedLayer ? (
+          <div className="flex flex-col gap-3 p-2 overflow-auto">
+            {renderProperties()}
+          </div>
+        ) : null}
       </div>
       <div className="flex flex-col h-full">
         <p className="font-semibold p-3 border-b border-gray-300">Layers</p>
-        <div className="flex flex-col gap-3 p-2 overflow-auto">
-          {layerIds.map((id) => (
-            <LayerDetail key={id} id={id} isSelected={selectedLayer === id} />
-          ))}
-        </div>
+        {layerIds.length > 0 ? (
+          <div className="flex flex-col gap-3 p-2 overflow-auto">
+            {layerIds.map((id) => (
+              <LayerDetail key={id} id={id} isSelected={selectedLayer === id} />
+            ))}
+          </div>
+        ) : null}
       </div>
     </div>
   );

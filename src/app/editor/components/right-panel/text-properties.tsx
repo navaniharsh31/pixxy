@@ -32,6 +32,16 @@ const TextProperties = ({ layer, updateLayer }: TextPropertiesProps) => {
           updateLayer(e, layer);
         }}
       />
+      <BaseInput
+        placeholder="400"
+        type="number"
+        label="Weight"
+        value={layer.fontWeight.toString()}
+        name="fontWeight"
+        onChange={(e) => {
+          updateLayer(e, layer);
+        }}
+      />
       <div className="flex flex-col justify-start">
         <p className="text-sm font-medium text-gray-700 mb-8">Color</p>
         <HexColorPicker

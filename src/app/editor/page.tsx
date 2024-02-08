@@ -5,12 +5,23 @@ import EditorSidebar from "./components/sidebar";
 import { selectedImageAtom } from "@/state";
 import ImageSelector from "./components/image-selector";
 import ImageEditor from "./components/image-editor";
+import BaseButton from "@/components/atoms/button";
+import { useRouter } from "next/navigation";
+
 const Editor = () => {
   const selectedImage = useAtomValue(selectedImageAtom);
+  const router = useRouter();
   return (
     <div className="h-screen bg-gray-50 flex flex-col">
-      <div className="min-h-[60px] border-b border-gray-300 flex items-center justify-start px-4">
+      <div className="min-h-[60px] border-b border-gray-300 flex items-center justify-between px-4">
         <h1 className="text-orange-500 font-bold text-2xl">Pixxy</h1>
+        <BaseButton
+          label="Log out"
+          className="!w-fit bg-transparent border border-orange-500 !text-orange-500 hover:!text-white"
+          onClick={() => {
+            router.push("/login");
+          }}
+        />
       </div>
 
       <div className="flex flex-grow flex-col h-full overflow-hidden">
