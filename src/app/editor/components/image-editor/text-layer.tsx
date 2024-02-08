@@ -6,7 +6,7 @@ import {
 import { TextLayer } from "@/typings";
 import clsx from "clsx";
 import { useAtom, useSetAtom } from "jotai";
-import React, { MouseEvent, useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 
 interface TextLayerComponentProps {
   layer: TextLayer;
@@ -16,7 +16,8 @@ const TextLayerComponent = ({ layer }: TextLayerComponentProps) => {
   const [selectedLayer, setSelectedLayer] = useAtom(selectedLayerAtom);
   const [canEdit, setCanEdit] = useState(false);
   const spanRef = useRef<HTMLSpanElement | null>(null);
-  const containerRef = useRef<HTMLDivElement | null>(null)
+  const containerRef = useRef<HTMLDivElement | null>(null);
+
   useEffect(() => {
     if (spanRef.current && canEdit) {
       spanRef.current.focus();
@@ -25,8 +26,8 @@ const TextLayerComponent = ({ layer }: TextLayerComponentProps) => {
 
   useEffect(() => {
     if (!containerRef.current) return;
-    const handleClickOutside = (event: any) => {
-      if (containerRef.current && !containerRef.current.contains(event.target)) {
+    const handleClickOutside = (event: MouseEvent | TouchEvent) => {
+      if (containerRef.current && !containerRef.current.contains(event.target as HTMLElement)) {
         setSelectedLayer('');
       }
     }
