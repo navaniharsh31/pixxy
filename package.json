@@ -9,19 +9,33 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@popperjs/core": "^2.11.8",
+    "clsx": "^2.1.0",
+    "html-to-image": "^1.11.11",
+    "jotai": "^2.6.4",
+    "jotai-optics": "^0.3.2",
+    "lodash.capitalize": "^4.2.1",
+    "next": "14.1.0",
+    "optics-ts": "^2.4.1",
     "react": "^18",
+    "react-colorful": "^5.6.1",
     "react-dom": "^18",
-    "next": "14.1.0"
+    "react-draggable": "^4.4.6",
+    "react-icons": "^5.0.1",
+    "react-popper": "^2.3.0",
+    "uuid": "^9.0.1"
   },
   "devDependencies": {
-    "typescript": "^5",
+    "@types/lodash.capitalize": "^4.2.9",
     "@types/node": "^20",
     "@types/react": "^18",
     "@types/react-dom": "^18",
+    "@types/uuid": "^9.0.8",
     "autoprefixer": "^10.0.1",
+    "eslint": "^8",
+    "eslint-config-next": "14.1.0",
     "postcss": "^8",
     "tailwindcss": "^3.3.0",
-    "eslint": "^8",
-    "eslint-config-next": "14.1.0"
+    "typescript": "^5"
   }
 }
