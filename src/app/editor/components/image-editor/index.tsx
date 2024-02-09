@@ -96,6 +96,7 @@ const ImageEditor = ({ image }: ImageEditorProps) => {
       ref={setImageRef}
       onDrop={handleOnDrop}
       onDragOver={(e) => e.preventDefault()}
+      id="image-container"
     >
       <img
         src={editedImage as string}

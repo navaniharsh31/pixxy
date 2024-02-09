@@ -30,7 +30,10 @@ const Editor = () => {
             <EditorSidebar />
           </div>
 
-          <div className="col-span-11 border-r flex items-center justify-center p-12 border-gray-300 overflow-hidden">
+          <div
+            id="editor-container"
+            className="col-span-11 border-r flex items-center justify-center p-12 border-gray-300 overflow-hidden"
+          >
             {!selectedImage ? (
               <ImageSelector />
             ) : (

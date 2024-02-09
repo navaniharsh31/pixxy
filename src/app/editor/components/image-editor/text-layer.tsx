@@ -25,17 +25,19 @@ const TextLayerComponent = ({ layer }: TextLayerComponentProps) => {
   }, [canEdit]);
 
   useEffect(() => {
-    if (!containerRef.current) return;
     const handleClickOutside = (event: MouseEvent | TouchEvent) => {
-      if (containerRef.current && !containerRef.current.contains(event.target as HTMLElement)) {
-        setSelectedLayer('');
+      const editorContainerElement =
+        document.getElementById("editor-container");
+      if (!editorContainerElement) return;
+      if (editorContainerElement.contains(event.target as HTMLElement)) {
+        setSelectedLayer("");
       }
-    }
+    };
     document.addEventListener("mousedown", handleClickOutside);
     return () => {
       document.removeEventListener("mousedown", handleClickOutside);
     };
-  }, []);
+  }, [setSelectedLayer]);
 
   return (
     <div
