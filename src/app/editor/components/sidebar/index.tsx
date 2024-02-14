@@ -2,7 +2,7 @@ import { LuFilter } from "react-icons/lu";
 import { PiTextTBold } from "react-icons/pi";
 import ToolButton from "./tool-button";
 import { MdOutlineCropRotate, MdOutlineImage } from "react-icons/md";
-import { FaBorderStyle } from "react-icons/fa";
+import { FaBorderStyle, FaRedo, FaUndo } from "react-icons/fa";
 import {
   EditorLayer,
   FiltersLayer,
@@ -125,6 +125,10 @@ const EditorSidebar = () => {
     });
   }, [imageRef, selectedImage?.name]);
 
+  const handleUndo = useCallback(() => {
+    layerSetter({ action: LayerActionTypes.UNDO });
+  }, [layerSetter]);
+
   return (
     <div className="w-full h-full flex flex-col justify-between p-6 border-r border-gray-300">
       <div className="flex-grow flex flex-col gap-4">
@@ -138,6 +142,8 @@ const EditorSidebar = () => {
             />
           );
         })}
+        <ToolButton Icon={FaUndo} onClick={handleUndo} tooltipLabel="Undo" />
+        <ToolButton Icon={FaRedo} onClick={() => {}} tooltipLabel="Redo" />
       </div>
       {selectedImage ? (
         <div className="flex flex-col gap-4">

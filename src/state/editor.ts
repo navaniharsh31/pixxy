@@ -117,20 +117,26 @@ export const layerFamilyAtom = atomFamily(
 
 export const layerIdsAtom = atom<string[]>([]);
 
+export const layerHistoryAtom = atom<Array<EditorLayer | string>>([]);
+
 export enum LayerActionTypes {
   ADD = "ADD",
   REMOVE = "REMOVE",
   UPDATE = "UPDATE",
   RESET = "RESET",
+  UNDO = "UNDO",
 }
 
 export type LayerSetterArgs =
   | {
-      action: LayerActionTypes;
+      action:
+        | LayerActionTypes.ADD
+        | LayerActionTypes.UPDATE
+        | LayerActionTypes.REMOVE;
       layer: EditorLayer;
     }
   | {
-      action: LayerActionTypes.RESET;
+      action: LayerActionTypes.RESET | LayerActionTypes.UNDO;
     };
 
 export const layerSetterAtom = atom(null, (get, set, args: LayerSetterArgs) => {
@@ -156,6 +162,7 @@ export const layerSetterAtom = atom(null, (get, set, args: LayerSetterArgs) => {
         [args.layer.type]: layerTypeCount[args.layer.type] + 1,
       });
       set(selectedLayerAtom, args.layer.id);
+      set(layerHistoryAtom, [...get(layerHistoryAtom), args.layer.id]);
       break;
     case LayerActionTypes.REMOVE:
       layerFamilyAtom.remove(args.layer.id);
@@ -166,9 +173,15 @@ export const layerSetterAtom = atom(null, (get, set, args: LayerSetterArgs) => {
         ...layerTypeCount,
         [args.layer.type]: layerTypeCount[args.layer.type] - 1,
       });
+      set(selectedLayerAtom, layerIds[layerIds.length - 1] || null);
+      set(
+        layerHistoryAtom,
+        get(layerHistoryAtom).filter((id) => id !== args.layer.id)
+      );
       break;
     case LayerActionTypes.UPDATE:
       set(layerFamilyAtom(args.layer.id), args.layer);
+      set(layerHistoryAtom, [...get(layerHistoryAtom), args.layer]);
       break;
     case LayerActionTypes.RESET:
       set(layerIdsAtom, []);
@@ -179,6 +192,34 @@ export const layerSetterAtom = atom(null, (get, set, args: LayerSetterArgs) => {
         [LayerTypes.ROTATE]: 0,
         [LayerTypes.STROKE]: 0,
       });
+      set(layerHistoryAtom, []);
+      break;
+    case LayerActionTypes.UNDO:
+      const lastLayer = get(layerHistoryAtom).pop();
+      const lastLayerData = get(
+        layerFamilyAtom(
+          typeof lastLayer === "string"
+            ? lastLayer
+            : lastLayer
+            ? lastLayer.id
+            : ""
+        )
+      );
+      if (!lastLayerData) return;
+      if (typeof lastLayer === "string") {
+        layerFamilyAtom.remove(lastLayer);
+        const layerIdsSet = new Set(layerIds);
+        layerIdsSet.delete(lastLayer);
+        set(layerIdsAtom, [...layerIdsSet]);
+        set(layerTypeCountAtom, {
+          ...layerTypeCount,
+          [lastLayer]: layerTypeCount[lastLayerData.type] - 1,
+        });
+        set(selectedLayerAtom, layerIds[layerIds.length - 1] || null);
+      } else {
+        set(layerFamilyAtom(lastLayerData.id), lastLayer);
+      }
+      set(layerHistoryAtom, get(layerHistoryAtom));
       break;
   }
 });
