@@ -119,12 +119,15 @@ export const layerIdsAtom = atom<string[]>([]);
 
 export const layerHistoryAtom = atom<Array<EditorLayer | string>>([]);
 
+export const layerRedoHistoryAtom = atom<Array<EditorLayer>>([]);
+
 export enum LayerActionTypes {
   ADD = "ADD",
   REMOVE = "REMOVE",
   UPDATE = "UPDATE",
   RESET = "RESET",
   UNDO = "UNDO",
+  REDO = "REDO",
 }
 
 export type LayerSetterArgs =
@@ -136,7 +139,10 @@ export type LayerSetterArgs =
       layer: EditorLayer;
     }
   | {
-      action: LayerActionTypes.RESET | LayerActionTypes.UNDO;
+      action:
+        | LayerActionTypes.RESET
+        | LayerActionTypes.UNDO
+        | LayerActionTypes.REDO;
     };
 
 export const layerSetterAtom = atom(null, (get, set, args: LayerSetterArgs) => {
@@ -207,6 +213,10 @@ export const layerSetterAtom = atom(null, (get, set, args: LayerSetterArgs) => {
       );
       if (!lastLayerData) return;
       if (typeof lastLayer === "string") {
+        set(layerRedoHistoryAtom, [
+          ...get(layerRedoHistoryAtom),
+          lastLayerData,
+        ]);
         layerFamilyAtom.remove(lastLayer);
         const layerIdsSet = new Set(layerIds);
         layerIdsSet.delete(lastLayer);
@@ -218,8 +228,26 @@ export const layerSetterAtom = atom(null, (get, set, args: LayerSetterArgs) => {
         set(selectedLayerAtom, layerIds[layerIds.length - 1] || null);
       } else {
         set(layerFamilyAtom(lastLayerData.id), lastLayer);
+        set(layerRedoHistoryAtom, [
+          ...get(layerRedoHistoryAtom),
+          lastLayerData,
+        ]);
       }
       set(layerHistoryAtom, get(layerHistoryAtom));
+      break;
+    case LayerActionTypes.REDO:
+      const lastRedoLayer = get(layerRedoHistoryAtom).pop();
+      if (!lastRedoLayer) return;
+      set(layerFamilyAtom(lastRedoLayer.id), lastRedoLayer);
+      if (
+        JSON.stringify({ ...lastRedoLayer, id: "" }) ===
+        JSON.stringify({ ...layerDefaultsMapper[lastRedoLayer.type], id: "" })
+      ) {
+        set(layerHistoryAtom, [...get(layerHistoryAtom), lastRedoLayer.id]);
+      } else set(layerHistoryAtom, [...get(layerHistoryAtom), lastRedoLayer]);
+      if (!layerIds.includes(lastRedoLayer.id)) {
+        set(layerIdsAtom, [...layerIds, lastRedoLayer.id]);
+      }
       break;
   }
 });

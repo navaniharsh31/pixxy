@@ -129,6 +129,10 @@ const EditorSidebar = () => {
     layerSetter({ action: LayerActionTypes.UNDO });
   }, [layerSetter]);
 
+  const handleRedo = useCallback(() => {
+    layerSetter({ action: LayerActionTypes.REDO });
+  }, [layerSetter]);
+
   return (
     <div className="w-full h-full flex flex-col justify-between p-6 border-r border-gray-300">
       <div className="flex-grow flex flex-col gap-4">
@@ -143,7 +147,7 @@ const EditorSidebar = () => {
           );
         })}
         <ToolButton Icon={FaUndo} onClick={handleUndo} tooltipLabel="Undo" />
-        <ToolButton Icon={FaRedo} onClick={() => {}} tooltipLabel="Redo" />
+        <ToolButton Icon={FaRedo} onClick={handleRedo} tooltipLabel="Redo" />
       </div>
       {selectedImage ? (
         <div className="flex flex-col gap-4">
