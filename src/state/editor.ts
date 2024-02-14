@@ -201,7 +201,10 @@ export const layerSetterAtom = atom(null, (get, set, args: LayerSetterArgs) => {
       set(layerHistoryAtom, []);
       break;
     case LayerActionTypes.UNDO:
-      const lastLayer = get(layerHistoryAtom).pop();
+      const layerHistory = get(layerHistoryAtom);
+      const lastLayer = layerHistory.pop();
+      if (!lastLayer) return;
+      set(layerHistoryAtom, [...layerHistory]);
       const lastLayerData = get(
         layerFamilyAtom(
           typeof lastLayer === "string"
@@ -220,12 +223,13 @@ export const layerSetterAtom = atom(null, (get, set, args: LayerSetterArgs) => {
         layerFamilyAtom.remove(lastLayer);
         const layerIdsSet = new Set(layerIds);
         layerIdsSet.delete(lastLayer);
+        const tmpLayerIds = [...layerIdsSet];
         set(layerIdsAtom, [...layerIdsSet]);
         set(layerTypeCountAtom, {
           ...layerTypeCount,
           [lastLayer]: layerTypeCount[lastLayerData.type] - 1,
         });
-        set(selectedLayerAtom, layerIds[layerIds.length - 1] || null);
+        set(selectedLayerAtom, tmpLayerIds[tmpLayerIds.length - 1] || "");
       } else {
         set(layerFamilyAtom(lastLayerData.id), lastLayer);
         set(layerRedoHistoryAtom, [
@@ -236,8 +240,10 @@ export const layerSetterAtom = atom(null, (get, set, args: LayerSetterArgs) => {
       set(layerHistoryAtom, get(layerHistoryAtom));
       break;
     case LayerActionTypes.REDO:
-      const lastRedoLayer = get(layerRedoHistoryAtom).pop();
+      const lastRedos = get(layerRedoHistoryAtom);
+      const lastRedoLayer = lastRedos.pop();
       if (!lastRedoLayer) return;
+      set(layerRedoHistoryAtom, [...lastRedos]);
       set(layerFamilyAtom(lastRedoLayer.id), lastRedoLayer);
       if (
         JSON.stringify({ ...lastRedoLayer, id: "" }) ===
