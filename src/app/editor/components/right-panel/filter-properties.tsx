@@ -24,7 +24,6 @@ const FilterProperties = ({ layer, updateLayer }: Props) => {
         value: e.target.value.toString(),
       },
     };
-    console.log(updatedFilters);
     updateLayer(
       {
         target: {

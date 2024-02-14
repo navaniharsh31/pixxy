@@ -65,7 +65,6 @@ const RightPanel = () => {
         ...layer,
         [e.target.name]: e.target.value,
       };
-      console.log(updatedLayer);
       layerSetter({ action: LayerActionTypes.UPDATE, layer: updatedLayer });
     },
     [layerSetter]

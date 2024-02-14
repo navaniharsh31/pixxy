@@ -246,8 +246,22 @@ export const layerSetterAtom = atom(null, (get, set, args: LayerSetterArgs) => {
       set(layerRedoHistoryAtom, [...lastRedos]);
       set(layerFamilyAtom(lastRedoLayer.id), lastRedoLayer);
       if (
-        JSON.stringify({ ...lastRedoLayer, id: "" }) ===
-        JSON.stringify({ ...layerDefaultsMapper[lastRedoLayer.type], id: "" })
+        JSON.stringify(
+          { ...lastRedoLayer, id: "" },
+          Object.keys({ ...lastRedoLayer, id: "" }).sort()
+        ) ===
+        JSON.stringify(
+          {
+            ...layerDefaultsMapper[lastRedoLayer.type],
+            id: "",
+            type: lastRedoLayer.type,
+          },
+          Object.keys({
+            ...layerDefaultsMapper[lastRedoLayer.type],
+            id: "",
+            type: lastRedoLayer.type,
+          }).sort()
+        )
       ) {
         set(layerHistoryAtom, [...get(layerHistoryAtom), lastRedoLayer.id]);
       } else set(layerHistoryAtom, [...get(layerHistoryAtom), lastRedoLayer]);
